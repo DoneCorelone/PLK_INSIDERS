@@ -61,18 +61,18 @@
 <div class="container">
     <!-- Panel logowania -->
     <div id="login-zone">
-        <h2>Autoryzacja gościa</h2>
-        <p>Wprowadź 8-cyfrowy kod dostępu, aby połączyć z siecią.</p>
+        <h2>Autoryzacja połączenia z siecią</h2>
+        <p>Podaj SFID lokalizacji, aby połączyć się z siecią.</p>
         <input type="password" id="pin-input" maxlength="8" placeholder="••••••••" inputmode="numeric">
-        <button onclick="verifyPin()">Zatwierdź</button>
+        <button onclick="verifyPin()">Autoryzuj</button>
         <div id="error-msg" class="error">Nieprawidłowy kod dostępu.</div>
     </div>
 
     <!-- Panel po poprawnym zalogowaniu -->
     <div id="success-zone" class="success-zone">
-        <h2>Zeskanuj, aby połączyć</h2>
+        <h2>Zeskanuj, aby połączyć się z siecią</h2>
         <div id="qrcode-target"></div>
-        <p style="margin-top: 1rem;">Naiwź aparat na kod QR.</p>
+        <p style="margin-top: 1rem;">Naprowadź aparat telefonu na kod QR lub użyj funkcji "Zakreśl aby wysuzkać".</p>
     </div>
 </div>
 
