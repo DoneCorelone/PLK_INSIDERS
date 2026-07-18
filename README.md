@@ -1,2 +1,2 @@
 # PLK_INSIDERS
-A Website containing additional verification to authenticate a connection to Wi-Fi at GRYF
+A repository of various crazy projects I do at work instead of doing my job :)
