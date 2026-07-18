@@ -74,10 +74,15 @@
 </div>
 
 <script>
-
     const CORRECT_PIN_HASH = "8d37be801936b2722423f6f4cab35e8190226075890d1124938e393a5088d2f6"; 
-    const WIFI_SSID = "ZTE_MC888_AA1FC7";
-    const WIFI_PASS = "3FA54E43HD";
+    
+    const ENC_SSID = [89,4,36,90,76,3,61,63,95,94,36,90,56,66,56,71,68];
+    const ENC_PASS = [50,71,66,52,55,70,51,54,73,69];
+
+    function decrypt(encodedArray, pin) {
+        let key = pin.repeat(5);
+        return encodedArray.map((byte, i) => String.fromCharCode(byte ^ key.charCodeAt(i))).join('');
+    }
 
     async function sha256(string) {
         const utf8 = new TextEncoder().encode(string);
@@ -86,8 +91,11 @@
         return hashArray.map(bytes => bytes.toString(16).padStart(2, '0')).join('');
     }
 
-    function generateWifiQR() {
-        const wifiData = `WIFI:S:${WIFI_SSID};T:WPA;P:${WIFI_PASS};;`;
+    function generateWifiQR(pin) {
+        const ssid = decrypt(ENC_SSID, pin);
+        const pass = decrypt(ENC_PASS, pin);
+        
+        const wifiData = `WIFI:S:${ssid};T:WPA;P:${pass};;`;
 
         var qr = qrcode(4, 'L');
         qr.addData(wifiData);
@@ -105,12 +113,13 @@
         if (inputHash === CORRECT_PIN_HASH) {
             document.getElementById('login-zone').style.display = 'none';
             document.getElementById('success-zone').style.display = 'block';
-            generateWifiQR();
+            generateWifiQR(input);
         } else {
             errorMsg.style.display = 'block';
             document.getElementById('pin-input').value = '';
         }
     }
+
     document.getElementById('pin-input').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') verifyPin();
     });
