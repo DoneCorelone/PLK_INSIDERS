@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dostęp do sieci Wi-Fi</title>
-    <!-- Ładujemy minimalistyczny generator kodów QR -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <style>
         body {
@@ -59,7 +58,6 @@
 <body>
 
 <div class="container">
-    <!-- Panel logowania -->
     <div id="login-zone">
         <h2>Autoryzacja połączenia z siecią</h2>
         <p>Podaj SFID lokalizacji, aby połączyć się z siecią.</p>
@@ -68,7 +66,6 @@
         <div id="error-msg" class="error">Nieprawidłowy kod dostępu.</div>
     </div>
 
-    <!-- Panel po poprawnym zalogowaniu -->
     <div id="success-zone" class="success-zone">
         <h2>Zeskanuj, aby połączyć się z siecią</h2>
         <div id="qrcode-target"></div>
@@ -77,11 +74,9 @@
 </div>
 
 <script>
-    // --- TWOJA KONFIGURACJA ZASTOSOWANA PONIŻEJ ---
     const CORRECT_PIN_HASH = "8d37be801936b2722423f6f4cab35e8190226075890d1124938e393a5088d2f6"; 
     const WIFI_SSID = "ZTE_MC888_AA1FC7";
     const WIFI_PASS = "3FA54E43HD";
-    // -----------------------------------------------
 
     async function sha256(string) {
         const utf8 = new TextEncoder().encode(string);
@@ -92,15 +87,11 @@
 
     function generateWifiQR() {
         const wifiData = `WIFI:S:${WIFI_SSID};T:WPA;P:${WIFI_PASS};;`;
-        
-        // Inicjalizacja generatora kodów QR
-        // Typ 4 (25x25, wystarczający dla 37 znaków danych Wi-Fi)
-        // Korekcja błędów L (najniższa, dla najlepszego skanowania na ekranie)
+
         var qr = qrcode(4, 'L');
         qr.addData(wifiData);
         qr.make();
         
-        // Wstawiamy wygenerowany kod QR jako obrazek
         document.getElementById('qrcode-target').innerHTML = qr.createImgTag(5); // Wielkość modułu 5
     }
 
@@ -120,7 +111,6 @@
         }
     }
 
-    // Pozwala na zatwierdzenie enterem
     document.getElementById('pin-input').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') verifyPin();
     });
