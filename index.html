@@ -77,6 +77,10 @@
     const CORRECT_PIN_HASH = "8d37be801936b2722423f6f4cab35e8190226075890d1124938e393a5088d2f6"; 
     const WIFI_SSID = "ZTE_MC888_AA1FC7";
     const WIFI_PASS = "3FA54E43HD";
+    
+    // SHA-256 hashes of the WiFi credentials
+    const WIFI_SSID_HASH = "5e88e5b3c4e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5"; // Replace with actual hash
+    const WIFI_PASS_HASH = "3c5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e"; // Replace with actual hash
 
     async function sha256(string) {
         const utf8 = new TextEncoder().encode(string);
@@ -85,14 +89,26 @@
         return hashArray.map(bytes => bytes.toString(16).padStart(2, '0')).join('');
     }
 
-    function generateWifiQR() {
-        const wifiData = `WIFI:S:${WIFI_SSID};T:WPA;P:${WIFI_PASS};;`;
-
-        var qr = qrcode(4, 'L');
-        qr.addData(wifiData);
-        qr.make();
+    async function generateWifiQR() {
+        // Hash the WiFi credentials
+        const ssidHash = await sha256(WIFI_SSID);
+        const passHash = await sha256(WIFI_PASS);
         
-        document.getElementById('qrcode-target').innerHTML = qr.createImgTag(5); // Wielkość modułu 5
+        // Verify hashes match expected values for security
+        if (ssidHash === WIFI_SSID_HASH && passHash === WIFI_PASS_HASH) {
+            // Use original credentials in QR code (unhashed for device connection)
+            const wifiData = `WIFI:S:${WIFI_SSID};T:WPA;P:${WIFI_PASS};;`;
+
+            var qr = qrcode(4, 'L');
+            qr.addData(wifiData);
+            qr.make();
+            
+            document.getElementById('qrcode-target').innerHTML = qr.createImgTag(5);
+        } else {
+            console.error('WiFi credentials hash mismatch - potential security issue');
+            document.getElementById('error-msg').style.display = 'block';
+            document.getElementById('error-msg').textContent = 'Błąd bezpieczeństwa: dane sieci są uszkodzone.';
+        }
     }
 
     async function verifyPin() {
@@ -104,9 +120,10 @@
         if (inputHash === CORRECT_PIN_HASH) {
             document.getElementById('login-zone').style.display = 'none';
             document.getElementById('success-zone').style.display = 'block';
-            generateWifiQR();
+            await generateWifiQR();
         } else {
             errorMsg.style.display = 'block';
+            errorMsg.textContent = 'Nieprawidłowy kod dostępu.';
             document.getElementById('pin-input').value = '';
         }
     }
